@@ -1,0 +1,159 @@
+<ul>
+  
+  	<li key="tab_0">{{default@0.tab}}</li>
+  
+  	<li key="tab_1">{{default@1.tab}}</li>
+  
+  	<li key="tab_2">{{default@2.tab}}</li>
+  
+  	<li key="tab_3">{{default@3.tab}}</li>
+  
+</ul>
+
+<div class="g" id="tab_0">
+	<div class="g-u">
+		<h3>{{default@0.title}}</h3>
+		<p>{{default@0.desc}}</p>
+		<ul>
+			
+			<li><a href="{{default@0.links@0.url}}">{{default@0.links@0.title}}</a></li>
+			
+			<li><a href="{{default@0.links@1.url}}">{{default@0.links@1.title}}</a></li>
+			
+		</ul>
+	</div>
+	<div class="g-u">
+		<ul class="g">
+			
+			<li>
+				<a href="{{default@0.rightPic@0.url}}" title="{{default@0.rightPic@0.title}}">
+					<img src="{{default@0.rightPic@0.src}}" style="width:200px;height:200px;" alt="{{default@0.rightPic@0.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@0.rightPic@1.url}}" title="{{default@0.rightPic@1.title}}">
+					<img src="{{default@0.rightPic@1.src}}" style="width:200px;height:200px;" alt="{{default@0.rightPic@1.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@0.rightPic@2.url}}" title="{{default@0.rightPic@2.title}}">
+					<img src="{{default@0.rightPic@2.src}}" style="width:200px;height:200px;" alt="{{default@0.rightPic@2.title}}"/>
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+
+<div class="g" id="tab_1">
+	<div class="g-u">
+		<h3>{{default@1.title}}</h3>
+		<p>{{default@1.desc}}</p>
+		<ul>
+			
+			<li><a href="{{default@1.links@0.url}}">{{default@1.links@0.title}}</a></li>
+			
+			<li><a href="{{default@1.links@1.url}}">{{default@1.links@1.title}}</a></li>
+			
+		</ul>
+	</div>
+	<div class="g-u">
+		<ul class="g">
+			
+			<li>
+				<a href="{{default@1.rightPic@0.url}}" title="{{default@1.rightPic@0.title}}">
+					<img src="{{default@1.rightPic@0.src}}" style="width:200px;height:200px;" alt="{{default@1.rightPic@0.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@1.rightPic@1.url}}" title="{{default@1.rightPic@1.title}}">
+					<img src="{{default@1.rightPic@1.src}}" style="width:200px;height:200px;" alt="{{default@1.rightPic@1.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@1.rightPic@2.url}}" title="{{default@1.rightPic@2.title}}">
+					<img src="{{default@1.rightPic@2.src}}" style="width:200px;height:200px;" alt="{{default@1.rightPic@2.title}}"/>
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+
+<div class="g" id="tab_2">
+	<div class="g-u">
+		<h3>{{default@2.title}}</h3>
+		<p>{{default@2.desc}}</p>
+		<ul>
+			
+			<li><a href="{{default@2.links@0.url}}">{{default@2.links@0.title}}</a></li>
+			
+			<li><a href="{{default@2.links@1.url}}">{{default@2.links@1.title}}</a></li>
+			
+		</ul>
+	</div>
+	<div class="g-u">
+		<ul class="g">
+			
+			<li>
+				<a href="{{default@2.rightPic@0.url}}" title="{{default@2.rightPic@0.title}}">
+					<img src="{{default@2.rightPic@0.src}}" style="width:200px;height:200px;" alt="{{default@2.rightPic@0.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@2.rightPic@1.url}}" title="{{default@2.rightPic@1.title}}">
+					<img src="{{default@2.rightPic@1.src}}" style="width:200px;height:200px;" alt="{{default@2.rightPic@1.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@2.rightPic@2.url}}" title="{{default@2.rightPic@2.title}}">
+					<img src="{{default@2.rightPic@2.src}}" style="width:200px;height:200px;" alt="{{default@2.rightPic@2.title}}"/>
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+
+<div class="g" id="tab_3">
+	<div class="g-u">
+		<h3>{{default@3.title}}</h3>
+		<p>{{default@3.desc}}</p>
+		<ul>
+			
+			<li><a href="{{default@3.links@0.url}}">{{default@3.links@0.title}}</a></li>
+			
+			<li><a href="{{default@3.links@1.url}}">{{default@3.links@1.title}}</a></li>
+			
+		</ul>
+	</div>
+	<div class="g-u">
+		<ul class="g">
+			
+			<li>
+				<a href="{{default@3.rightPic@0.url}}" title="{{default@3.rightPic@0.title}}">
+					<img src="{{default@3.rightPic@0.src}}" style="width:200px;height:200px;" alt="{{default@3.rightPic@0.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@3.rightPic@1.url}}" title="{{default@3.rightPic@1.title}}">
+					<img src="{{default@3.rightPic@1.src}}" style="width:200px;height:200px;" alt="{{default@3.rightPic@1.title}}"/>
+				</a>
+			</li>
+			
+			<li>
+				<a href="{{default@3.rightPic@2.url}}" title="{{default@3.rightPic@2.title}}">
+					<img src="{{default@3.rightPic@2.src}}" style="width:200px;height:200px;" alt="{{default@3.rightPic@2.title}}"/>
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</div>
