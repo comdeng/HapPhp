@@ -52,16 +52,17 @@ class Template
 		$ret[] = '<input type="hidden" name="tpl_key" value="'.$this->tpl_key.'"/>';
 		$ret[] = '<input type="hidden" name="tpl_action" value="preview"/>';
 
-		$ret[] = '<ul class="tabs">';
-		foreach($this->tpl_vars as $groupKey => $group) {
-			$ret[] = "<li groupKey=\"group_{$groupKey}\">{$group['name']}</li>";
-		}
-		$ret[] = '</ul>';
-
-		foreach($this->tpl_vars as $groupKey => $group) {
+		$ret[] = '<ul class="tabs g">';
+		foreach($this->tpl_vars as $groupKey => &$group) {
 			$group['key'] = $groupKey;
 			$group['idKey'] = 'group_'.$this->id.'_'.$groupKey;
 			$group['dataKey'] = $groupKey;
+			$ret[] = "<li Key=\"{$group['idKey']}\">{$group['name']}</li>";
+		}
+		unset($group);
+		$ret[] = '</ul>';
+
+		foreach($this->tpl_vars as $groupKey => $group) {
 			$this->renderGroup(0, $group, $ret);
 		}
 
@@ -73,6 +74,11 @@ hapj(function(H) {
 	H.com('verify').active('{$formId}', {
 		'ok': function(data){
 			H.ui.id('{$divId}').html(data.html);
+			
+			if (this['tpl_action'].value == 'save') {
+				this.style.display = 'none';
+				H.ui.dialog.ok('保存成功');
+			}
 		}
 	});
 	H.ui.id('{$divId}').on('click', function(){
@@ -86,7 +92,25 @@ hapj(function(H) {
 		return false;
 	});
 
-	H.ui.id('{$formId}').cls('group_tabs').on('change', function(){
+	var form = H.ui.id('{$formId}');
+	var sw = form.cls('tabs').switchable({
+		tag:'li',
+		map:function(i) {
+			console.log(H.ui._id(this.getAttribute('key')));
+			return H.ui._id(this.getAttribute('key'));
+		},
+		trigger:function(ts) {
+			ts.removeClass('on');
+			this.className = 'on';
+		},
+		target:function(ts){
+			ts.hide();
+			this.style.display = 'block';
+		}
+	});
+	sw.first();
+
+	form.cls('group_tabs').on('change', function(){
 		var id = this.value;
 		var pid = this.getAttribute('key') + '_dd';
 		H.ui.id(pid).childs().hide();
@@ -112,7 +136,7 @@ JSCODE;
 	private function renderGroup($level, $group, array &$ret)
 	{
 		$width = 600 - $level * 80;
-		$count = $group['count'];
+		$count = isset($group['count']) ? intval($group['count']) : 1;
 		$ret[] = "<dl id=\"{$group['idKey']}\" class=\"g\">";
 		$ddWidth = $width;
 		if ($count > 1) {

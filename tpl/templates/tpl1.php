@@ -95,7 +95,7 @@ hapj(function(H){
 </script>
 {{#for default}}
 <div class="g" id="tab_{{_INDEX_}}_{{_ID_}}">
-	<div class="g-u">
+	<div class="g-u" style="width:380px;">
 		<h3>{{.title}}</h3>
 		<p>{{.desc}}</p>
 		<ul>
@@ -104,7 +104,7 @@ hapj(function(H){
 			{{#for}}
 		</ul>
 	</div>
-	<div class="g-u">
+	<div class="g-u" style="width:600px;">
 		<ul class="g">
 			{{#for .rightPic}}
 			<li>

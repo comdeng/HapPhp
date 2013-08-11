@@ -15,7 +15,7 @@ return array(
 					'type' => 'image',
 					'name' => '左图图片',
 					'width' => 200,
-					'height' => 300,
+					'height' => 160,
 				),
 				'url' => array(
 					'type' => 'url',
@@ -76,24 +76,24 @@ return array(
 	'tpl_content' => <<<HTML
 <div class="g" style="width:840px;">
 	<div class="g-u" style="width:200px;margin:10px;">
-		<a href="{{leftPic:url}}"><img src="{{leftPic:src}}" alt="{{leftPic:title}}" style="width:{{leftPic:src.width}}px;height:{{leftPic:src.height}}px;"/></a>
-		<h3><a href="{{leftPic:url}}">{{leftPic:title}}</a></h3>
-		<p>{{leftPic:desc}}</p>
+		<a href="{{leftPic.url}}"><img src="{{leftPic.src}}" alt="{{leftPic.title}}" style="width:{{leftPic.src:width}}px;height:{{leftPic.src:height}}px;"/></a>
+		<h3><a href="{{leftPic.url}}">{{leftPic.title}}</a></h3>
+		<p>{{leftPic.desc}}</p>
 	</div>
 	<div class="g-u" style="width:600px;margin:10px;">
 		<ul class="g">
 			<li class="g-1-2">
-				<a href="{{rightHeadPic@0:url}}"><img src="{{rightHeadPic@0:src}}" alt="{{rightHeadPic@0:title}}" style="width:{{rightHeadPic:src.width}}px;height:{{rightHeadPic:src.height}}px;"></a>
-				<h3>{{rightHeadPic@0:title}}</h3>
+				<a href="{{rightHeadPic@0.url}}"><img src="{{rightHeadPic@0.src}}" alt="{{rightHeadPic@0.title}}" style="width:{{rightHeadPic.src:width}}px;height:{{rightHeadPic.src:height}}px;"></a>
+				<h3>{{rightHeadPic@0.title}}</h3>
 			</li>
 			<li class="g-1-2">
-				<a href="{{rightHeadPic@1:url}}"><img src="{{rightHeadPic@1:src}}" alt="{{rightHeadPic@1:title}}" style="width:{{rightHeadPic:src.width}}px;height:{{rightHeadPic:src.height}}px;"></a>
-				<h3>{{rightHeadPic@1:title}}</h3>
+				<a href="{{rightHeadPic@1.url}}"><img src="{{rightHeadPic@1.src}}" alt="{{rightHeadPic@1.title}}" style="width:{{rightHeadPic.src:width}}px;height:{{rightHeadPic.src:height}}px;"></a>
+				<h3>{{rightHeadPic@1.title}}</h3>
 			</li>
 		</ul>
 		<div>
-			<a href="{{rightFootPic:url}}"><img src="{{rightFootPic:src}}" alt="{{rightFootPic:title}}" style="width:{{rightFootPic:src.width}}px;height:{{rightFootPic:src.height}}px;"></a>
-			<h3>{{rightFootPic:title}}</h3>
+			<a href="{{rightFootPic.url}}"><img src="{{rightFootPic.src}}" alt="{{rightFootPic.title}}" style="width:{{rightFootPic.src:width}}px;height:{{rightFootPic.src:height}}px;"></a>
+			<h3>{{rightFootPic.title}}</h3>
 		</div>
 	</div>
 </div>
