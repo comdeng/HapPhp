@@ -91,9 +91,7 @@ class Template
 			$groups[$key] = array();
 			$groups[$key][] = '<table id="tpl_group_'.$this->formId.'_'.$key.'"><tbody>';
 			foreach($value['vars'] as $k => $v) {
-				if ($key !== 0) {
-					$k = $key.self::GROUP_FLAG.$k;
-				}
+				$k = $key.self::GROUP_FLAG.$k;
 				$groups[$key][] = $this->generateItem($k, $v);
 			}
 			$groups[$key][] = '</tbody></table>';

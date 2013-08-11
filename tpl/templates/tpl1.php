@@ -7,6 +7,10 @@ return array(
 			'name' => '默认',
 			'count' => 4,
 			'vars' => array(
+				'_VISIBLE_' => array(
+					'name' => '是否可见',
+					'type' => 'bool',
+				),
 				'tab' => array(
 					'name' => 'Tab名称',
 					'type' => 'text',
@@ -60,13 +64,37 @@ return array(
 		),
 	),
 	'tpl_content' => <<<HTML
-<ul>
+<style>
+	.Tpl_MainTab li{width:100px;font-size:16px;height:40px;line-height:40px;text-align:center;border:solid 1px #CCC;}
+	.Tpl_MainTab li.on{background: #369;color:#fff;}
+</style>
+<ul class="Tpl_MainTab g" id="tab_{{_ID_}}">
   {{#for default}}
-  	<li key="tab_{{_INDEX_}}">{{.tab}}</li>
+  	<li key="tab_{{_INDEX_}}_{{_ID_}}">{{.tab}}</li>
   {{#for}}
 </ul>
+<script>
+hapj(function(H){
+	var sw = H.ui.id('tab_{{_ID_}}').switchable({
+		tag:'li',
+		method:'hover',
+		map:function(i){
+			return H.ui._id(this.getAttribute('key'));
+		},
+		trigger: function(ts) {
+			ts.removeClass('on');
+			this.className = 'on';
+		},
+		target: function(ts) {
+			ts.hide();
+			this.style.display = 'block';
+		}
+	});
+	sw.first();
+});
+</script>
 {{#for default}}
-<div class="g" id="tab_{{_INDEX_}}">
+<div class="g" id="tab_{{_INDEX_}}_{{_ID_}}">
 	<div class="g-u">
 		<h3>{{.title}}</h3>
 		<p>{{.desc}}</p>
@@ -81,7 +109,7 @@ return array(
 			{{#for .rightPic}}
 			<li>
 				<a href="{{.url}}" title="{{.title}}">
-					<img src="{{.src}}" style="width:{{.src:width}}px;height:{{.src:width}}px;" alt="{{.title}}"/>
+					<img src="{{.src}}" style="width:{{.src:width}}px;height:{{.src:height}}px;" alt="{{.title}}"/>
 				</a>
 			</li>
 			{{#for}}

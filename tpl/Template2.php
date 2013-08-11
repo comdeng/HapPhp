@@ -1,5 +1,5 @@
 <?php
-class Template2 
+class Template
 {
 	var $tpl_name;
 	var $tpl_key;
@@ -20,19 +20,15 @@ class Template2
 	const INDEX_FLAG = '@';
 	const COMMAND_FLAG = '#';
 
-	const CMD_LEFT_SPLITTER = '{{#';
-	const CMD_RIGHT_SPLITTER = '}}';
-	const CMD_LEFT_SPLITTER_LEN = 3;
-	const CMD_RIGHT_SPLITTER_LEN = 2;
-
-	public static function LoadTemplate($path)
+	public static function LoadTemplate($path, $data = null)
 	{
 		$arr = include $path;
-		$tpl = new Template2();
+		$tpl = new Template();
 		foreach($arr as $key => $value) {
 			$tpl->$key = $value;
 		}
 		$tpl->id = self::$minId++;
+		$tpl->tpl_data = $data;
 		$tpl->init();
 		return $tpl;
 	}
@@ -48,13 +44,210 @@ class Template2
 	}
 
 	/**
+	 * 编辑商家信息
+	 * @param array | null $data 数据
+	 */
+	public function Edit($postUrl, $className="TplContainer")
+	{
+		$ret = array();
+		$divId = 'tpl_div_'.$this->id;
+		$ret[] = '<div id="'.$divId.'" class="'.$className.'_Div">';
+		$ret[] = $this->Compile($this->tpl_data ? $this->tpl_data : array());
+		$ret[] = '</div>';
+		$formId = 'tpl_form_'.$this->id;
+		$ret[] = '<form id="'.$formId.'" method="post" action="'.$postUrl.'" class="'.$className.'_Form">';
+		$ret[] = '<input type="hidden" name="tpl_key" value="'.$this->tpl_key.'"/>';
+		$ret[] = '<input type="hidden" name="tpl_action" value="preview"/>';
+
+		$ret[] = '<ul class="tabs">';
+		foreach($this->tpl_vars as $groupKey => $group) {
+			$ret[] = "<li groupKey=\"group_{$groupKey}\">{$group['name']}</li>";
+		}
+		$ret[] = '</ul>';
+
+		foreach($this->tpl_vars as $groupKey => $group) {
+			$group['key'] = $groupKey;
+			$group['idKey'] = 'group_'.$groupKey;
+			$group['dataKey'] = $groupKey;
+			$this->renderGroup(0, $group, $ret);
+		}
+
+		$ret[] = '<div><input type="submit" value="预览" onclick="this.form.tpl_action.value=\'preview\'"/> <input type="submit" value="保存" onclick="this.form.tpl_action.value=\'save\'"/></div>';
+		$ret[] = '</form>';
+		$ret[] = <<<JSCODE
+<script>
+hapj(function(H) {
+	H.com('verify').active('{$formId}', {
+		'ok': function(data){
+			H.ui.id('{$divId}').html(data.html);
+		}
+	});
+})
+</script>
+JSCODE;
+
+		return implode('', $ret);
+	}
+
+	/**
+	 * 渲染组
+	 * @param  int $level	组的深度
+	 * @param  array $group    组
+	 * @param array $ret 渲染html的数组
+	 */
+	private function renderGroup($level, $group, array &$ret)
+	{
+		$width = 600 - $level * 80;
+		$count = $group['count'];
+		$ret[] = "<dl id=\"{$group['idKey']}\" class=\"g\">";
+		$ddWidth = $width;
+		if ($count > 1) {
+			$ret[] = '<dt style="width:80px" class="group_dropdown">';
+			$ddWidth = $width - 80;
+			$ret[] = '<select class="group_tabs " key="'.$group['idKey'].'" autocomplete="off">';
+			for($i = 0; $i < $group['count']; $i++) {
+				$num = $i+1;
+				$ret[] = "<option value=\"{$group['idKey']}_{$i}\">{$group['name']}{$num}</option>";
+			}
+			$ret[] = '</select>';
+			$ret[] = '<b></b></dt>';
+		}
+		$ret[] = '<dd style="width:'.$ddWidth.'px;" id="'.$group['idKey'].'_dd">';
+		for($i = 0; $i < $count; $i++) {
+			$ret[] = "<div id=\"{$group['idKey']}_{$i}\">";
+			foreach($group['vars'] as $varKey => $var) {
+				$var['dataKey'] = sprintf("%s%s%d%s%s", $group['dataKey'], self::INDEX_FLAG, $i, self::GROUP_FLAG, $varKey);
+				$var['idKey'] = "{$group['idKey']}_{$i}_{$varKey}";
+				if (isset($var['vars'])) {
+					$this->renderGroup($level + 1, $var, $ret);
+				} else {
+					$this->renderItem($var, $ret);
+				}
+			}
+			$ret[] = '</div>';
+		}
+		$ret[] = '</dd>';
+		$ret[] = '</dl>';
+	}
+
+	private function renderItem($item, array &$ret)
+	{
+		$type = $item['type'];
+		switch($type) {
+			case 'text':
+				$this->getTextElem($item['dataKey'], $item, $ret);
+			break;
+			case 'image':
+				$this->getImageElem($item['dataKey'], $item, $ret);
+			break;
+			case 'url':
+				$this->getUrlElem($item['dataKey'], $item, $ret);
+			break;
+			case 'bool':
+				$this->getBoolElem($item['dataKey'], $item, $ret);
+			break;
+			default:
+			throw new Exception('tempate.u_typeNotSupported type='.$type);
+			break;
+		}
+	}
+
+	/**
+	 * 获取文本元素
+	 * @param string $key 
+	 * @param  array $var
+	 * @return string
+	 */
+	private function getTextElem($key, $var, array &$ret)
+	{
+		
+		$ret[] = '<div class="group_item"><label>'.(isset($var['name']) ? $var['name'] : '文本').'</label>';
+		$maxlength = isset($var['maxlength']) ? intval($var['maxlength']) : 20;
+		if ($maxlength <= 20) {
+			$maxlength = 20;
+		}
+		if ($maxlength < 150) {
+			$ret[] = '<input type="text" maxlength="'.$maxlength.'" name="data['.$key.']" style="width:'.($maxlength*12).'px;" value="'.(!empty($this->tpl_data[$key]) ? $this->tpl_data[$key] : '').'"/>';
+		} else {
+			$ret[] = '<textarea maxlength="'.$maxlength.'" name="data['.$key.']" style="width:400px;height:100px;">'.(!empty($this->tpl_data[$key]) ? $this->tpl_data[$key] : '').'</textarea>';
+		}
+		
+		$ret[] = '</div>';
+	}
+
+	/**
+	 * 获取单选元素
+	 * @param string $key 
+	 * @param  array $var
+	 * @return string
+	 */
+	private function getBoolElem($key, $var, array &$ret)
+	{
+		
+		$ret[] = '<div class="group_item"><label>'.(isset($var['name']) ? $var['name'] : '是否').'</label>';
+		$checked = !isset($this->tpl_data[$key]) ? -1 : intval($this->tpl_data[$key]);
+		if ($checked > 0 || $checked < -1) {
+			$checked = 1;
+		}
+		$ret[] = '<input type="radio" name="data['.$key.']" value="1"'.($checked === 1 ? ' checked="checked"' : '').'/>&nbsp;是&nbsp;&nbsp;&nbsp;';
+		$ret[] = '<input type="radio" name="data['.$key.']" value="0"'.($checked === 0 ? ' checked="checked"' : '').'/>&nbsp;否';
+		
+		$ret[] = '</div>';
+	}
+
+	/**
+	 * 获取文本元素
+	 * @param string $key 
+	 * @param  array $var
+	 * @return string
+	 */
+	private function getUrlElem($key, $var, array &$ret)
+	{
+		$ret[] = '<div class="group_item"><label>'.(isset($var['name']) ? $var['name'] : '网址').'</label>';
+		$maxlength = isset($var['maxlength']) ? intval($var['maxlength']) : 100;
+		if ($maxlength <= 100) {
+			$maxlength = 100;
+		}
+		
+		$ret[] = '<input type="text" maxlength="'.$maxlength.'" verify-rule="{url:\'网址格式不正确\'}"  name="data['.$key.']" style="width:240px;" placeholder="http://" value="'.(!empty($this->tpl_data[$key]) ? $this->tpl_data[$key] : '').'"/>';
+		$ret[] = '</div>';
+	}
+
+	/**
+	 * 获取文本元素
+	 * @param string $key 
+	 * @param  array $var
+	 * @return string
+	 */
+	private function getImageElem($key, $var, array &$ret)
+	{
+		$imgId = 'tpl_form_'.$this->id.'_'.$key;
+		$ret[] = '<div class="group_item"><label>'.(isset($var['name']) ? $var['name'] : '图片').'</label>';
+		$maxlength = isset($var['maxlength']) ? intval($var['maxlength']) : 100;
+		if ($maxlength <= 100) {
+			$maxlength = 100;
+		}
+		
+		$ret[] = '<input type="hidden" name="data['.$key.']" value="'.(!empty($this->tpl_data[$key]) ? $this->tpl_data[$key] : '').'"/><span id="'.$imgId.'"></span>';
+// 		$ret[] = <<<JSCODE
+// <script>
+// hapj(function(H) {
+// 	H.com('upload').active('{$imgId}').setCallback(function(img){
+// 		H.ui.id('{$imgId}').prev().attr('value', img.id)
+// 	});
+// })
+// </script>
+// JSCODE;
+		$ret[] = '</div>';
+	}
+
+	/**
 	 * 编译
 	 * @param array $data
 	 */
 	public function Compile($data = null)
 	{
 		$this->preCompile();
-		file_put_contents("a.log", $this->tpl_pre_content);
 		return $this->doCompile($data);
 	}
 
@@ -106,7 +299,7 @@ class Template2
 				break;
 			}
 
-			$ret[] = substr($ctx, 0, $leftPos);
+			$ret[] = mb_substr($ctx, 0, $leftPos);
 			$segment = mb_substr($ctx, $leftPos + self::LEFT_SPLITTER_LEN, $rightPos - $leftPos - 2);
 			if ($segment[0] == self::COMMAND_FLAG) { //
 				$cmdEndPos = mb_strpos($segment, " ");
@@ -129,7 +322,7 @@ class Template2
 					if ( $len = count($commands) ) {
 						$cmd->parent = $commands[$len - 1];
 					}
-					$cmd->PreHandle($this->tpl_vars);
+					$cmd->PreHandle($this->tpl_vars, $this->tpl_data);
 					$commands[] = $cmd;
 					$cmdStarted = true;
 				}
@@ -205,13 +398,14 @@ class TemplateCommand
 interface TemplateCommandInterface
 {
 	function DealResult(array &$ret);
-	function PreHandle($vars);
+	function PreHandle($vars, $data);
 	function HandleVar($var);
 	function GetNsVars($vars);
 }
 
 class TemplateForCommand extends TemplateCommand implements TemplateCommandInterface
 {
+	private $visibles = null;
 	function DealResult(array &$ret)
 	{
 		$slice = array_slice($ret, $this->startIndex);
@@ -220,10 +414,16 @@ class TemplateForCommand extends TemplateCommand implements TemplateCommandInter
 		}
 		if ($this->count > 1) {
 			for($i = 1; $i < $this->count; $i++) {
-				foreach($slice as $s) {
-					array_push($ret, $this->replace($s, $i));
+				if ($this->visibles && $this->visibles[$i]) {
+					foreach($slice as $s) {
+						array_push($ret, $this->replace($s, $i));
+					}
 				}
 			}
+		}
+		// 如果一个也不显示，则直接去掉
+		if ($this->visibles && !$this->visibles[0]) {
+			$ret = array_slice($ret, 0, $this->startIndex);
 		}
 	}
 
@@ -237,7 +437,7 @@ class TemplateForCommand extends TemplateCommand implements TemplateCommandInter
 		return $orig;
 	}
 
-	function PreHandle($vars)
+	function PreHandle($vars, $data)
 	{
 		// 处理命名空间的问题
 		$namespace = array($this->param.'@'.'{{'.$this->id.'.index}}');
@@ -267,6 +467,17 @@ class TemplateForCommand extends TemplateCommand implements TemplateCommandInter
 			$this->count = 1;
 		}
 		
+		$hasVisibleVar = isset($vars['vars']['visible']) ? true : false;
+		$visibles = array();
+		if ($hasVisibleVar) {
+			// 检查变量中是否有visible
+			for($i = 0; $i < $this->count; $i++) {
+				$key = $this->namespace.'@'.$i.'.visible';
+				var_dump($nam);
+				$visibles[$i] = isset($data[$key]) ? $data[$key] == 1 : true;
+			}
+		}
+		$this->visibles = $visibles;
 	}
 
 	function GetNsVars($vars)
@@ -296,11 +507,11 @@ class TemplateForCommand extends TemplateCommand implements TemplateCommandInter
 }
 
 // test
-$tpl = Template2::LoadTemplate('templates/tpl1.php');
-$ret = $tpl->Compile(array(
-	'default@0.links@0.url' => 'http://www.jiehun.com.cn',
-	'default@0.links@0.title' => '中国婚博会',
-	'default@0.links@1.url' => 'http://www.baidu.com/',
-	'default@0.links@1.title' => '百度',
-));
-var_dump($ret);
+//$tpl = Template::LoadTemplate('templates/tpl1.php');
+// $ret = $tpl->Compile(array(
+// 	'default@0.links@0.url' => 'http://www.jiehun.com.cn',
+// 	'default@0.links@0.title' => '中国婚博会',
+// 	'default@0.links@1.url' => 'http://www.baidu.com/',
+// 	'default@0.links@1.title' => '百度',
+// ));
+//echo $tpl->Edit('/tpl/_edit');
