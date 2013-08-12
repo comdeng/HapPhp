@@ -66,7 +66,7 @@ class Template
 			$this->renderGroup(0, $group, $ret);
 		}
 
-		$ret[] = '<div><input type="submit" value="预览" onclick="this.form.tpl_action.value=\'preview\'"/> <input type="submit" value="保存" onclick="this.form.tpl_action.value=\'save\'"/></div>';
+		$ret[] = '<div><input type="submit" value="预览" onclick="this.form.tpl_action.value=\'preview\'"/> <input type="submit" value="保存" onclick="this.form.tpl_action.value=\'save\'"/>&nbsp;<a href="" class="close">关闭</a></div>';
 		$ret[] = '</form>';
 		$ret[] = <<<JSCODE
 <script>
@@ -109,6 +109,10 @@ hapj(function(H) {
 		}
 	});
 	sw.first();
+	form.cls('close').on('click', function(){
+		form.hide();
+		return false;
+	});
 
 	form.cls('group_tabs').on('change', function(){
 		var id = this.value;
