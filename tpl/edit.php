@@ -147,7 +147,7 @@ font-size:14px;
 					url:'/HapPhp/tpl/tpl.php?tpl=' + value,
 					dataType:'json',
 					success:function(data) {
-						panel.html(data.html);
+						panel.html(data.html, true);
 					}
 				});
 			});

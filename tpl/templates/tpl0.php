@@ -33,6 +33,10 @@ return array(
 			'name' => '右图1',
 			'count' => 2,
 			'vars' => array(
+				'_VISIBLE_' => array(
+					'name' => '是否可见',
+					'type' => 'bool',
+				),
 				'title' => array(
 					'type' => 'text',
 					'name' => '右图1标题',
@@ -82,14 +86,12 @@ return array(
 	</div>
 	<div class="g-u" style="width:600px;margin:10px;">
 		<ul class="g">
+			{{#for rightHeadPic}}
 			<li class="g-1-2">
-				<a href="{{rightHeadPic@0.url}}"><img src="{{rightHeadPic@0.src}}" alt="{{rightHeadPic@0.title}}" style="width:{{rightHeadPic.src:width}}px;height:{{rightHeadPic.src:height}}px;"></a>
-				<h3>{{rightHeadPic@0.title}}</h3>
+				<a href="{{.url}}"><img src="{{.src}}" alt="{{.title}}" style="width:{{.src:width}}px;height:{{.src:height}}px;"></a>
+				<h3>{{.title}}</h3>
 			</li>
-			<li class="g-1-2">
-				<a href="{{rightHeadPic@1.url}}"><img src="{{rightHeadPic@1.src}}" alt="{{rightHeadPic@1.title}}" style="width:{{rightHeadPic.src:width}}px;height:{{rightHeadPic.src:height}}px;"></a>
-				<h3>{{rightHeadPic@1.title}}</h3>
-			</li>
+			{{#for}}
 		</ul>
 		<div>
 			<a href="{{rightFootPic.url}}"><img src="{{rightFootPic.src}}" alt="{{rightFootPic.title}}" style="width:{{rightFootPic.src:width}}px;height:{{rightFootPic.src:height}}px;"></a>
